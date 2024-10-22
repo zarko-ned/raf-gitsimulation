@@ -1,6 +1,12 @@
 package rs.raf.ts.git;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+
+@Getter
+
 public class Commit {
     private String message;
     private String commitHash;
@@ -17,16 +23,6 @@ public class Commit {
         return Integer.toHexString(message.hashCode() + (parent != null ? parent.hashCode() : 0));
     }
 
-    public String getMessage() {
-        return message;
-    }
 
-    public String getCommitHash() {
-        return commitHash;
-    }
-
-    public Commit getParent() {
-        return parent;
-    }
 }
 

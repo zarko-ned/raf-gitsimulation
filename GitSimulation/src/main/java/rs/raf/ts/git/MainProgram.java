@@ -1,33 +1,35 @@
 package rs.raf.ts.git;
 
 public class MainProgram {
+
     public static void main(String[] args) {
         GitSimulator gitSimulator = new GitSimulator();
 
-        // Različiti scenariji za testiranje validateCommit metode
+        // Prikaz statusa na početku
+        gitSimulator.gitStatus();
 
-        // 1. Scenarijo: Main branch, mnogo promena, repo čist
-        String status1 = gitSimulator.validateCommit("main", 120, false, true, false, true);
-        System.out.println("Status 1: " + status1); // Očekivano: Ready for commit
+        // Simuliraj promene i commit
+        gitSimulator.makeChanges(true, 50);  // Promene sa untracked fajlovima
+        gitSimulator.gitStatus();
+        gitSimulator.commit("Added initial feature");
 
-        // 2. Scenarijo: Feature branch, nema staged promena, repo nije čist
-        String status2 = gitSimulator.validateCommit("feature/new-feature", 30, false, false, false, false);
-        System.out.println("Status 2: " + status2); // Očekivano: Nothing to commit, working tree clean
+        // Prikaz git log-a nakon commita
+        gitSimulator.gitLog();
 
-        // 3. Scenarijo: Master branch, untracked fajlovi, previše promena
-        String status3 = gitSimulator.validateCommit("master", 150, true, false, false, false);
-        System.out.println("Status 3: " + status3); // Očekivano: Cannot commit: Untracked files or unstaged changes!
+        // Kreiraj novu granu i pređi na nju
+        gitSimulator.createBranch("feature/cool-feature");
+        gitSimulator.checkout("feature/cool-feature");
 
-        // 4. Scenarijo: Bugfix branch, merge konflikti, staged promene
-        String status4 = gitSimulator.validateCommit("bugfix/fix-issue", 20, false, true, true, false);
-        System.out.println("Status 4: " + status4); // Očekivano: Commit partially possible: Review changes!
+        // Simuliraj promene i commit na novoj grani
+        gitSimulator.makeChanges(false, 30);
+        gitSimulator.commit("Implemented cool feature");
 
-        // 5. Scenarijo: Main branch, merge konflikti i unstaged promene
-        String status5 = gitSimulator.validateCommit("main", 10, false, false, true, false);
-        System.out.println("Status 5: " + status5); // Očekivano: Cannot commit: Merge conflicts detected!
+        // Prikaz git log-a na novoj grani
+        gitSimulator.gitLog();
 
-        // 6. Scenarijo: Feature branch, staged promene, bez problema
-        String status6 = gitSimulator.validateCommit("feature/add-ui", 5, false, true, false, true);
-        System.out.println("Status 6: " + status6); // Očekivano: Commit ready for non-main branch
+        // Vrati se na "main" i prikaži istoriju commit-ova
+        gitSimulator.checkout("main");
+        gitSimulator.gitLog();
     }
+
 }
